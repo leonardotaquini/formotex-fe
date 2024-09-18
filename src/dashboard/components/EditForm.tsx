@@ -38,9 +38,11 @@ const formSchema = z.object({
   model: z.string().min(3, {
     message: "Model must be at least 3 characters.",
   }),
-  acquisition: z.string(),
-  location: z.string().min(3, {
-    message: "Location must be at least 3 characters.",
+  acquisition: z.string().min(10, {
+    message: "Acquisition must be at least 10 characters.",
+  }),
+  location: z.string().min(8, {
+    message: "Location must be at least 8 characters.",
   }),
   status: z.string().min(2, {
     message: "Status must be at least 2 characters.",

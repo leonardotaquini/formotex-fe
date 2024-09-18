@@ -256,7 +256,7 @@ export const EditForm = () => {
             variant={"outline"}
             className="col-span-12 sm:col-span-6 uppercase"
           >
-            Moficar
+            Modificar
           </Button>
           <Button
             type="button"

@@ -8,6 +8,7 @@ export const useDashboardStore = create<DashboardState>()(
     (set, get) => ({
       equipments: [],
       isLoading: false,
+      equipmentSelected: {} as Equipment,
       getEquipments: async (token:string) => {
         const response = await DashboardRequest.getEquipments(token);
         set({ equipments: response.data });
@@ -15,14 +16,61 @@ export const useDashboardStore = create<DashboardState>()(
       addEquipment: async(equipment: EquipmentRequest, token:string) =>{
         const response  = await DashboardRequest.addEquipment( token, equipment);
         set({ equipments: [...get().equipments, response.data] });
+        if (response.status === 201) {
+          return {
+            equipment: response.data,
+            message: "Equipo agregado exitosamente",
+            status: "success",
+            statusCode: response.status,
+          };
+        }
+        return {
+          equipment: response.data,
+          message: "Error al agregar equipo",
+          status: "error",
+          statusCode: response.status,
+        };
       },
-      deleteEquipment: async (equipment: Equipment, token:string) => {
-        const equipmentDeleted = await DashboardRequest.deleteEquipment(token, equipment.id);
+      deleteEquipment: async (id: number, token:string) => {
+        const equipmentDeleted = await DashboardRequest.deleteEquipment(token, id);
         set({ equipments: get().equipments.filter((equip) => equip.id !== equipmentDeleted.data.id) });
+        if (equipmentDeleted.status === 200) {
+          return {
+            equipment: equipmentDeleted.data,
+            message: "Equipo eliminado exitosamente",
+            status: "success",
+            statusCode: equipmentDeleted.status,
+          };
+        }
+        return {
+          equipment: equipmentDeleted.data,
+          message: "Error al eliminar equipo",
+          status: "error",
+          statusCode: equipmentDeleted.status,
+        };
       },
-      updateEquipment: async (equipment: Equipment, token:string) => {
-        const response = await DashboardRequest.updateEquipment(token, equipment, equipment.id);
+      updateEquipment: async (equipment: EquipmentRequest, token:string) => {
+        const response = await DashboardRequest.updateEquipment(token, equipment, get().equipmentSelected.id);
         set({ equipments: get().equipments.map((equip) => (equip.id === response.data.id ? response.data : equip)) });
+        if (response.status === 200) {
+          return {
+            equipment: response.data,
+            message: "Equipo actualizado exitosamente",
+            status: "success",
+            statusCode: response.status,
+          };
+        }
+        return {
+          equipment: response.data,
+          message: "Error al actualizar equipo",
+          status: "error",
+          statusCode: response.status,
+        };
+        
+      },
+      setSelectEquipment: (id: number) => {
+        const equipment = get().equipments.find((equip) => equip.id === id);
+        set({ equipmentSelected: equipment! });
       },
     }),
     {

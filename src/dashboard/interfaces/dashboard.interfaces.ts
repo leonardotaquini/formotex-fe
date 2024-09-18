@@ -1,3 +1,5 @@
+import { VariantToast } from "@/components/hooks/useToast";
+
 export interface Equipment {
     id: number;
     name: string;
@@ -15,10 +17,12 @@ export interface Equipment {
   export interface DashboardState {
     equipments: Equipment[];
     isLoading: boolean;
+    equipmentSelected: Equipment;
     getEquipments: (token: string) => void;
-    addEquipment: (equipment: Equipment, token: string) => void;
-    updateEquipment: (equipment: Equipment, token: string) => void;
-    deleteEquipment: (equipment: Equipment, token: string) => void;
+    addEquipment: (equipment: EquipmentRequest, token: string) => Promise<DashboardResponse>;
+    updateEquipment: (equipment: EquipmentRequest, token: string) => Promise<DashboardResponse>;
+    deleteEquipment: (id: number, token: string) => Promise<DashboardResponse>;
+    setSelectEquipment: (id: number) => void;
   } 
 
   export interface EquipmentResponse {
@@ -34,13 +38,20 @@ export interface Equipment {
     updatedAt:   Date;
 }
 
+export interface DashboardResponse {
+  equipment: EquipmentResponse;
+  message:   string;
+  status:    VariantToast;
+  statusCode: number;
+}
+
 export interface EquipmentRequest {
     name:        string;
     brand:       string;
     model:       string;
     location:    string;
     acquisition: Date;
-    status?:      EquipmentStatus;
+    status:      EquipmentStatus;
     organization: string;
 }
 

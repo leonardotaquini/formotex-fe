@@ -9,6 +9,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/shadcn/ui/dropdown-menu";
+import { ChangeTheme } from "@/components/shadcn/ChangeTheme";
 
 export const Navigation = () => {
     const user = useAuthStore((state) => state.user);
@@ -50,6 +51,9 @@ export const Navigation = () => {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent>
                             <DropdownMenuLabel className="capitalize">{user?.name}</DropdownMenuLabel>
+                            <DropdownMenuItem asChild>
+                                <ChangeTheme />
+                            </DropdownMenuItem>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem onClick={logout} className="text-red-500">Cerrar sesión</DropdownMenuItem>
                         </DropdownMenuContent>

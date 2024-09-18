@@ -32,40 +32,43 @@ const formSchema = z.object({
   name: z.string().min(2, {
     message: "Name must be at least 2 characters.",
   }),
-  brand: z.string().min(8, {
-    message: "Brand must be at least 8 characters.",
+  brand: z.string().min(3, {
+    message: "Brand must be at least 3 characters.",
   }),
-  model: z.string().min(8, {
-    message: "Model must be at least 8 characters.",
+  model: z.string().min(3, {
+    message: "Model must be at least 3 characters.",
   }),
   acquisition: z.string(),
-  location: z.string().min(8, {
-    message: "Location must be at least 8 characters.",
+  location: z.string().min(3, {
+    message: "Location must be at least 3 characters.",
   }),
   status: z.string().min(2, {
     message: "Status must be at least 2 characters.",
   }),
-  organization: z.string().min(8, {
-    message: "Organization must be at least 8 characters.",
+  organization: z.string().min(3, {
+    message: "Organization must be at least 3 characters.",
   }),
 });
 
-export const DashboardForm = () => {
+
+
+export const EditForm = () => {
   const toast = useToast();
   const navigate = useNavigate();
-  const addEquipment = useDashboardStore((state) => state.addEquipment);
+  const updateEquipment = useDashboardStore((state) => state.updateEquipment);
+  const equipmentSelected = useDashboardStore((state) => state.equipmentSelected);
   const token = useAuthStore((state) => state.token);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      brand: "",
-      model: "",
-      acquisition: "",
-      location: "",
-      status: "",
-      organization: "",
+      name: equipmentSelected.name,
+      brand: equipmentSelected.brand,
+      model: equipmentSelected.model,
+      acquisition: '',
+      location: equipmentSelected.location,
+      status: equipmentSelected.status,
+      organization: equipmentSelected.organization,
     },
   });
 
@@ -76,7 +79,7 @@ export const DashboardForm = () => {
       acquisition: new Date(values.acquisition),
       status: values.status as EquipmentStatus,
     };
-    const res = await addEquipment(formattedValues, token!);
+    const res = await updateEquipment(formattedValues, token!);
 
     if (res.status === "success") {
       toast(res.message, res.status);
@@ -85,6 +88,12 @@ export const DashboardForm = () => {
       toast(res.message, res.status);
     }
   }
+
+  const handleCancel = () => {
+    form.reset();
+    navigate("/dashboard/inventory");
+  }
+
 
   return (
     <DashboardPage>
@@ -247,13 +256,13 @@ export const DashboardForm = () => {
             variant={"outline"}
             className="col-span-12 sm:col-span-6 uppercase"
           >
-            Confirmar
+            Moficar
           </Button>
           <Button
             type="button"
             variant={"destructive"}
             className="col-span-12 sm:col-span-6 uppercase"
-            onClick={() => form.reset()}
+            onClick={() => handleCancel() }
           >
             Cancelar
           </Button>
